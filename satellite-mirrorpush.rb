@@ -6,8 +6,6 @@ require 'io/console'
 require 'json'
 
 
-
-
 # Get command line opts
 
 opts = Trollop::options do
@@ -15,6 +13,7 @@ opts = Trollop::options do
   opt :username, "Satellite User name", :type => :string
   opt :password, "Satellite password", :type => :string
   opt :config, "Config file", :type => :string
+  opt :nodownload, "No download"
 end
 
 Trollop::die :server, "must exist" unless opts[:server]
@@ -22,9 +21,28 @@ Trollop::die :username, "must exist" unless opts[:username]
 Trollop::die :config, "must exist" unless opts[:config]
 Trollop::die :config, "must exist" unless File.exist?(opts[:config])
 
+filesize = 0
+
 # Read the repos we want to sync in
 channels = JSON.parse( IO.read(opts[:config]))
 
+UNITS = %W(B KiB MiB GiB TiB).freeze
+
+def as_size number
+  if number.to_i < 1024
+    exponent = 0
+
+  else
+    max_exp  = UNITS.size - 1
+
+    exponent = ( Math.log( number ) / Math.log( 1024 ) ).to_i # convert to base
+    exponent = max_exp if exponent > max_exp # we need this to avoid overflow for the highest unit
+
+    number  /= 1024 ** exponent
+  end
+
+  "#{number} #{UNITS[ exponent ]}"
+end
 
 # A quick method to read in a password
 if STDIN.respond_to?(:noecho)
@@ -53,15 +71,18 @@ Dir.mkdir("channels") unless File.exists?("channels")
 channels.each {
   |channelname,value|
   rpms = Hash.new
-  puts "Downloading channel #{channelname}"
+  puts "Working on channel #{channelname}"
   Dir.mkdir("channels/#{channelname}") unless File.exists?("channels/#{channelname}")   
   # Loop over each member repository of a channel
   value['repositories'].each  {
     |name,url|            
-    puts "Synchronising repo #{name} from #{url}"
+    
     Dir.mkdir("channels/#{channelname}/#{name}") unless File.exists?("channels/#{channelname}/#{name}")  
     # Run wget to mirror the folder
-    system "wget -nv -N -nd  -r -l 1 #{url} -P channels/#{channelname}/#{name}"
+    unless opts[:nodownload]
+      puts "Synchronising repo #{name} from #{url}"
+      system "wget -nv -N -nd  -r -l 1 #{url} -P channels/#{channelname}/#{name}" unless opts[:nodownload]
+    end
     rpmfiles = Dir["channels/#{channelname}/#{name}/*.rpm"]
     # Create a hash of versions of each package
     rpmfiles.each {
@@ -94,9 +115,17 @@ channels.each {
        end
     }
     filename = File.basename(selectedrpm)
+    filestat= File::Stat.new(selectedrpm)
+    filesize = filesize + filestat.size
     FileUtils.cp selectedrpm, "channels/#{channelname}/selected/#{filename}"
   }  
+ 
+
 }
+
+filesizefriendly = as_size filesize
+
+puts "Going to attempt to push #{filesizefriendly} to the satellite server"
 
 channels.each {
   |channelname,value|
