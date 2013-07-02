@@ -1,0 +1,29 @@
+{
+    "puppetlabs": {
+        "repositories": {
+            "puppetlabs": "http://yum.puppetlabs.com/el/6Server/products/x86_64/",
+            "puppetlabs-deps": "http://yum.puppetlabs.com/el/6Server/dependencies/x86_64/"
+        }
+    },
+    "puppetlabs-devel": {
+        "repositories": {
+            "puppetlabs": "http://yum.puppetlabs.com/el/6Server/products/x86_64/",
+            "puppetlabs-deps": "http://yum.puppetlabs.com/el/6Server/dependencies/x86_64/"
+        }
+    },
+    "stealthmonkeys": {
+        "repositories": {
+            "stealthmonkeys": "http://passenger.stealthymonkeys.com/rhel/6Server/x86_64/"
+        }
+    },
+    "stealthmonkeys-devel": {
+        "repositories": {
+            "stealthmonkeys": "http://passenger.stealthymonkeys.com/rhel/6Server/x86_64/"
+        }
+    },
+    "devtools": {
+        "repositories": {
+            "tru-devtools": "http://people.centos.org/tru/devtools-1.1/6/x86_64/RPMS/"
+        }
+    }
+}
