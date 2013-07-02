@@ -1,0 +1,14 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    ffi (1.8.1)
+    rpm (0.0.3)
+      ffi
+    trollop (2.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  rpm
+  trollop
