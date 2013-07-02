@@ -6,10 +6,10 @@
         }
     },
     "puppetlabs-devel": {
-        "repositories": {
-            "puppetlabs": "http://yum.puppetlabs.com/el/6Server/products/x86_64/",
-            "puppetlabs-deps": "http://yum.puppetlabs.com/el/6Server/dependencies/x86_64/"
-        }
+          "repositories": {
+              "puppetlabs": "http://yum.puppetlabs.com/el/6Server/products/x86_64/",
+              "puppetlabs-deps": "http://yum.puppetlabs.com/el/6Server/dependencies/x86_64/"
+          }
     },
     "stealthmonkeys": {
         "repositories": {
@@ -23,7 +23,12 @@
     },
     "devtools": {
         "repositories": {
-            "tru-devtools": "http://people.centos.org/tru/devtools-1.1/6/x86_64/RPMS/"
+            "sl-devtools": "http://linuxsoft.cern.ch/cern/devtoolset/slc6X/x86_64/yum/devtoolset/"
         }
+    },
+    "vmwaretools-5-0-u2": {
+      "repositories": {
+        "vmware-5-0-u2": "http://packages.vmware.com/tools/esx/5.0u2/rhel6/x86_64/index.html"
+      }
     }
 }
